@@ -12,6 +12,14 @@ import SwiftShell;
 
 typealias Byte=UInt8;
 
+var opcode = 0b0 as Byte;
+
+if CommandLine.arguments.count > 1 {
+    if CommandLine.arguments[1] == "--test" || CommandLine.arguments[1] == "-t" || CommandLine.arguments[1] == "test" {
+        opcode = 0b1 as Byte;
+    }
+}
+
 let address = InternetAddress.localhost(port: 12345);
 
 // get GIDs for user
@@ -21,7 +29,7 @@ do {
     // Try to connect to server
     let client = try TCPClient(address: address);
     // Try to send bytes
-    try client.send(bytes: [0] + gids);
+    try client.send(bytes: [opcode] + gids);
     // Save response
     let response = try client.receiveAll();
     if response[0] == 6 {
